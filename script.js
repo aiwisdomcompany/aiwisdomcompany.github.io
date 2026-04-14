@@ -57,6 +57,7 @@ const projects = [
     mediaType: "image",
     tone: "tone-1",
     featured: true,
+    showCaseLink: true,
   },
   {
     name: "泰祥保全有限公司官網",
@@ -68,6 +69,7 @@ const projects = [
     mediaType: "image",
     tone: "tone-2",
     featured: false,
+    showCaseLink: true,
   },
   {
     name: "Design_lab 設計公司 Airtable 整合案",
@@ -209,6 +211,9 @@ function renderProjects() {
         .trim();
       const isExternal = /^https?:\/\//.test(project.link);
       const linkTarget = isExternal ? 'target="_blank" rel="noopener noreferrer"' : "";
+      const caseLink = project.showCaseLink
+        ? `<a class="project-link" href="${project.link}" ${linkTarget} aria-label="查看 ${project.name} 專案">進入示範網站</a>`
+        : "";
 
       let mediaInner = "<span>Project Preview</span>";
       if (hasMedia && isVideo) {
@@ -236,7 +241,7 @@ function renderProjects() {
         <div class="project-content">
           <div class="project-meta">
             <span class="project-type">${project.type}</span>
-            <a class="project-link" href="${project.link}" ${linkTarget} aria-label="查看 ${project.name} 專案">View Case</a>
+            ${caseLink}
           </div>
           <h3>${project.name}</h3>
           <p>${project.description}</p>
