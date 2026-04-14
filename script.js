@@ -1,0 +1,259 @@
+const heroBadges = [
+  "數發部數位解決方案 銅牌 & 評審獎",
+  "App Store 教育類別第 1 名",
+  "喜來登飯店 Line AI 客服開發",
+];
+
+const services = [
+  {
+    title: "AI Agent / 多功能智能代理開發",
+    description:
+      "以企業任務為核心，打造可執行、可擴展、可監控的智能代理流程，從客服到內部決策支援皆可落地。",
+  },
+  {
+    title: "LLM 應用與企業知識系統",
+    description:
+      "整合內部文件、SOP 與歷史資料，建立可查詢、可推理、可持續更新的知識中樞，降低資訊斷層。",
+  },
+  {
+    title: "AI 聊天機器人",
+    description:
+      "打造符合品牌語氣與商業流程的對話體驗，串接網站、Line 或內部平台，提升客服效率與轉換率。",
+  },
+  {
+    title: "AI 互動教學系統",
+    description:
+      "結合學習路徑、即時回饋與情境互動，提供高參與度的教學體驗，支援教育與企業訓練場景。",
+  },
+  {
+    title: "自動化流程與內部系統整合",
+    description:
+      "將零散工具與人工流程整合成一致工作流，透過資料同步與自動化任務降低營運成本。",
+  },
+  {
+    title: "企業 AI 導入顧問與客製開發",
+    description:
+      "從導入評估、技術路線到產品化執行，協助企業以最短路徑取得可衡量成果與長期競爭力。",
+  },
+];
+
+const projects = [
+  {
+    name: "暴力鴨汽車百貨官網",
+    type: "Brand Website",
+    description: "企業形象官網重構與品牌資訊整合，強化產品導流與行動端詢單流程。",
+    link: "/projects/baoliya-auto",
+    tags: ["官網重構", "品牌策略", "轉換優化"],
+    tone: "tone-1",
+    featured: true,
+  },
+  {
+    name: "泰祥保全有限公司官網",
+    type: "Corporate Site",
+    description: "建立可信任的 B2B 服務敘事，優化詢價路徑與內容層級，提升潛在客戶理解速度。",
+    link: "/projects/taixiang-security",
+    tags: ["企業官網", "資訊架構", "B2B UX"],
+    tone: "tone-2",
+    featured: false,
+  },
+  {
+    name: "Design_lab 設計公司 Airtable 整合案",
+    type: "Automation",
+    description: "完成 Airtable 串接與專案流程自動化，讓設計交付進度與資源管理可視化且可追蹤。",
+    link: "/projects/design-lab-airtable",
+    tags: ["Airtable", "流程自動化", "系統整合"],
+    tone: "tone-3",
+    featured: false,
+  },
+  {
+    name: "SK2 TOEFL 互動模擬考試",
+    type: "EdTech + AI",
+    description: "設計 AI 教學互動體驗與模擬測驗流程，提升作答回饋品質與學習留存表現。",
+    link: "/projects/sk2-toefl",
+    tags: ["互動教學", "AI 回饋", "學習體驗"],
+    tone: "tone-4",
+    featured: false,
+  },
+  {
+    name: "Desko 教育 AI ERP 系統",
+    type: "AI ERP",
+    description: "整合教育場景 ERP 與 AI 功能模組，串接教務、內容與營運數據，支援決策流程。",
+    link: "/projects/desko-ai-erp",
+    tags: ["AI ERP", "資料整合", "教育科技"],
+    tone: "tone-5",
+    featured: true,
+  },
+];
+
+const awards = [
+  {
+    year: "2025",
+    title: "經濟部 Best AI Awards 入選決賽",
+    description: "以可落地的 AI 解決方案獲決賽肯定，展現技術與商業場景整合能力。",
+  },
+  {
+    year: "2025",
+    title: "交通部公路局 資料創新應用競賽 入選決賽",
+    description: "在資料應用與創新實作面向通過評選，延伸出可複製的落地模式。",
+  },
+  {
+    year: "2024",
+    title: "數位發展部 數位科技解決方案 銅牌獎 & 評審獎",
+    description: "同時獲得銅牌與評審肯定，驗證團隊跨領域整合與產品設計實力。",
+  },
+  {
+    year: "2024",
+    title: "榮獲 SiTi 台北市產業發展獎勵補助計畫",
+    description: "入選補助計畫，支持團隊持續投入 AI 產品研發與商業化落地。",
+  },
+];
+
+const proofPoints = [
+  {
+    label: "Best Ranking",
+    value: "App Store 教育類第 1 名",
+    description: "曾打造教育產品登上類別榜首，具備產品化與成長驗證經驗。",
+  },
+  {
+    label: "Hospitality AI",
+    value: "喜來登飯店 Line AI 客服",
+    description: "為高標準服務場景提供 AI 對話流程與客服整合開發。",
+  },
+  {
+    label: "Domain Coverage",
+    value: "網站 × 教育 × 企業系統",
+    description: "跨產業實戰經驗，能以商業目標快速定義最適技術路線。",
+  },
+  {
+    label: "Delivery Style",
+    value: "策略、設計、開發一體",
+    description: "縮短跨團隊溝通成本，讓專案更快從想法進入可運轉系統。",
+  },
+];
+
+function renderHeroBadges() {
+  const container = document.querySelector("#hero-badges");
+  if (!container) return;
+  container.innerHTML = heroBadges.map((item) => `<li>${item}</li>`).join("");
+}
+
+function renderServices() {
+  const container = document.querySelector("#services-grid");
+  if (!container) return;
+  container.innerHTML = services
+    .map(
+      (service, index) => `
+      <article class="service-card reveal" tabindex="0" aria-label="${service.title}">
+        <span class="service-index">${String(index + 1).padStart(2, "0")}</span>
+        <h3>${service.title}</h3>
+        <p>${service.description}</p>
+      </article>
+    `,
+    )
+    .join("");
+}
+
+function renderProjects() {
+  const container = document.querySelector("#project-grid");
+  if (!container) return;
+  container.innerHTML = projects
+    .map(
+      (project) => `
+      <article class="project-card ${project.featured ? "featured" : ""} reveal" aria-label="${project.name}">
+        <div class="project-media">
+          <div class="mock-browser" role="img" aria-label="${project.name} 專案預覽圖（placeholder）">
+            <div class="mock-top">
+              <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
+              <span class="mock-url">${project.link}</span>
+            </div>
+            <div class="mock-canvas ${project.tone}">
+              <span>Project Preview</span>
+            </div>
+          </div>
+        </div>
+        <div class="project-content">
+          <div class="project-meta">
+            <span class="project-type">${project.type}</span>
+            <a class="project-link" href="${project.link}" aria-label="查看 ${project.name} 專案">View Case</a>
+          </div>
+          <h3>${project.name}</h3>
+          <p>${project.description}</p>
+          <ul class="tags" aria-label="${project.name} 技術標籤">
+            ${project.tags.map((tag) => `<li>${tag}</li>`).join("")}
+          </ul>
+        </div>
+      </article>
+    `,
+    )
+    .join("");
+}
+
+function renderAwards() {
+  const container = document.querySelector("#award-list");
+  if (!container) return;
+  container.innerHTML = awards
+    .map(
+      (award) => `
+      <article class="award-item reveal" aria-label="${award.title}">
+        <p class="award-year">${award.year}</p>
+        <h3>${award.title}</h3>
+        <p>${award.description}</p>
+      </article>
+    `,
+    )
+    .join("");
+}
+
+function renderProofPoints() {
+  const container = document.querySelector("#proof-grid");
+  if (!container) return;
+  container.innerHTML = proofPoints
+    .map(
+      (point) => `
+      <article class="proof-card reveal" aria-label="${point.value}">
+        <div>
+          <p class="proof-label">${point.label}</p>
+          <p class="proof-value">${point.value}</p>
+        </div>
+        <p class="proof-desc">${point.description}</p>
+      </article>
+    `,
+    )
+    .join("");
+}
+
+function initRevealAnimations() {
+  const elements = document.querySelectorAll(".reveal");
+  if (!elements.length) return;
+
+  const observer = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          obs.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.14, rootMargin: "0px 0px -8% 0px" },
+  );
+
+  elements.forEach((element) => observer.observe(element));
+}
+
+function setCurrentYear() {
+  const el = document.querySelector("#year");
+  if (el) el.textContent = String(new Date().getFullYear());
+}
+
+function initPage() {
+  renderHeroBadges();
+  renderServices();
+  renderProjects();
+  renderAwards();
+  renderProofPoints();
+  initRevealAnimations();
+  setCurrentYear();
+}
+
+document.addEventListener("DOMContentLoaded", initPage);
