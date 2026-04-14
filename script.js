@@ -1,7 +1,16 @@
 const heroBadges = [
-  "數發部數位解決方案 銅牌 & 評審獎",
-  "App Store 教育類別第 1 名",
-  "喜來登飯店 Line AI 客服開發",
+  {
+    title: "數發部數位解決方案 銅牌 & 評審獎",
+    meta: "政府評選雙重肯定",
+  },
+  {
+    title: "App Store 教育類別第 1 名",
+    meta: "教育產品實戰成效",
+  },
+  {
+    title: "喜來登飯店 Line AI 客服開發",
+    meta: "高標準服務場景導入",
+  },
 ];
 
 const services = [
@@ -42,8 +51,10 @@ const projects = [
     name: "暴力鴨汽車百貨官網",
     type: "Brand Website",
     description: "企業形象官網重構與品牌資訊整合，強化產品導流與行動端詢單流程。",
-    link: "/projects/baoliya-auto",
+    link: "https://ethaniris.github.io/",
     tags: ["官網重構", "品牌策略", "轉換優化"],
+    media: "assets/projects/baoliya-auto.png",
+    mediaType: "image",
     tone: "tone-1",
     featured: true,
   },
@@ -51,8 +62,10 @@ const projects = [
     name: "泰祥保全有限公司官網",
     type: "Corporate Site",
     description: "建立可信任的 B2B 服務敘事，優化詢價路徑與內容層級，提升潛在客戶理解速度。",
-    link: "/projects/taixiang-security",
+    link: "https://enegroup01.github.io/dark.html",
     tags: ["企業官網", "資訊架構", "B2B UX"],
+    media: "assets/projects/taixiang-security.png",
+    mediaType: "image",
     tone: "tone-2",
     featured: false,
   },
@@ -62,6 +75,8 @@ const projects = [
     description: "完成 Airtable 串接與專案流程自動化，讓設計交付進度與資源管理可視化且可追蹤。",
     link: "/projects/design-lab-airtable",
     tags: ["Airtable", "流程自動化", "系統整合"],
+    media: "assets/projects/design_lab_demo.mp4",
+    mediaType: "video",
     tone: "tone-3",
     featured: false,
   },
@@ -71,6 +86,8 @@ const projects = [
     description: "設計 AI 教學互動體驗與模擬測驗流程，提升作答回饋品質與學習留存表現。",
     link: "/projects/sk2-toefl",
     tags: ["互動教學", "AI 回饋", "學習體驗"],
+    media: "assets/projects/toefl_demo.mp4",
+    mediaType: "video",
     tone: "tone-4",
     featured: false,
   },
@@ -80,8 +97,21 @@ const projects = [
     description: "整合教育場景 ERP 與 AI 功能模組，串接教務、內容與營運數據，支援決策流程。",
     link: "/projects/desko-ai-erp",
     tags: ["AI ERP", "資料整合", "教育科技"],
+    media: "assets/projects/desko_demo.mov",
+    mediaType: "video",
     tone: "tone-5",
     featured: true,
+  },
+  {
+    name: "國立資訊圖書館智慧館員 - AI曉書 chatbot",
+    type: "AI Chatbot",
+    description: "打造圖書館智慧館員對話系統，整合館務知識與即時問答，提升讀者自助服務效率。",
+    link: "/projects/library-ai-chatbot",
+    tags: ["智慧館員", "RAG問答", "圖書館場景"],
+    media: "assets/projects/library.png",
+    mediaType: "image",
+    tone: "tone-2",
+    featured: false,
   },
 ];
 
@@ -134,7 +164,19 @@ const proofPoints = [
 function renderHeroBadges() {
   const container = document.querySelector("#hero-badges");
   if (!container) return;
-  container.innerHTML = heroBadges.map((item) => `<li>${item}</li>`).join("");
+  container.innerHTML = heroBadges
+    .map(
+      (item, index) => `
+      <li class="hero-badge-item">
+        <span class="hero-badge-index">${String(index + 1).padStart(2, "0")}</span>
+        <div>
+          <p class="hero-badge-title">${item.title}</p>
+          <p class="hero-badge-meta">${item.meta}</p>
+        </div>
+      </li>
+    `,
+    )
+    .join("");
 }
 
 function renderServices() {
@@ -157,24 +199,44 @@ function renderProjects() {
   const container = document.querySelector("#project-grid");
   if (!container) return;
   container.innerHTML = projects
-    .map(
-      (project) => `
-      <article class="project-card ${project.featured ? "featured" : ""} reveal" aria-label="${project.name}">
+    .map((project) => {
+      const hasMedia = Boolean(project.media);
+      const isVideo = project.mediaType === "video";
+      const mediaLabel = hasMedia ? `${project.name} 專案預覽圖` : `${project.name} 專案預覽圖（placeholder）`;
+      const mediaTone = hasMedia ? "" : project.tone;
+      const cardClass = [project.featured ? "featured" : "", hasMedia ? "has-media" : "", isVideo ? "has-video" : ""]
+        .join(" ")
+        .trim();
+      const isExternal = /^https?:\/\//.test(project.link);
+      const linkTarget = isExternal ? 'target="_blank" rel="noopener noreferrer"' : "";
+
+      let mediaInner = "<span>Project Preview</span>";
+      if (hasMedia && isVideo) {
+        mediaInner = `
+          <video class="mock-canvas-media" src="${project.media}" autoplay muted loop controls playsinline preload="metadata" aria-label="${project.name} 影片預覽"></video>
+          <span class="media-chip">Video Preview</span>
+        `;
+      } else if (hasMedia) {
+        mediaInner = `<img class="mock-canvas-media" src="${project.media}" alt="${project.name} 視覺預覽圖" loading="lazy" />`;
+      }
+
+      return `
+      <article class="project-card ${cardClass} reveal" aria-label="${project.name}">
         <div class="project-media">
-          <div class="mock-browser" role="img" aria-label="${project.name} 專案預覽圖（placeholder）">
+          <div class="mock-browser" role="img" aria-label="${mediaLabel}">
             <div class="mock-top">
               <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
               <span class="mock-url">${project.link}</span>
             </div>
-            <div class="mock-canvas ${project.tone}">
-              <span>Project Preview</span>
+            <div class="mock-canvas ${mediaTone}">
+              ${mediaInner}
             </div>
           </div>
         </div>
         <div class="project-content">
           <div class="project-meta">
             <span class="project-type">${project.type}</span>
-            <a class="project-link" href="${project.link}" aria-label="查看 ${project.name} 專案">View Case</a>
+            <a class="project-link" href="${project.link}" ${linkTarget} aria-label="查看 ${project.name} 專案">View Case</a>
           </div>
           <h3>${project.name}</h3>
           <p>${project.description}</p>
@@ -183,8 +245,8 @@ function renderProjects() {
           </ul>
         </div>
       </article>
-    `,
-    )
+    `;
+    })
     .join("");
 }
 
