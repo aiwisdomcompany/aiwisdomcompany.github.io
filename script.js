@@ -50,7 +50,7 @@ const projects = [
   {
     name: "暴力鴨汽車百貨官網",
     type: "Brand Website",
-    description: "企業形象官網重構與品牌資訊整合，強化產品導流與行動端詢單流程。",
+    description: "結合 AI Agent 推薦與 LLM 導購流程，提升詢單轉換。",
     link: "https://ethaniris.github.io/",
     tags: ["官網重構", "品牌策略", "轉換優化"],
     media: "assets/projects/baoliya-auto.png",
@@ -62,7 +62,7 @@ const projects = [
   {
     name: "泰祥保全有限公司官網",
     type: "Corporate Site",
-    description: "建立可信任的 B2B 服務敘事，優化詢價路徑與內容層級，提升潛在客戶理解速度。",
+    description: "導入 NLP 問答與 AI 風險分流，強化 B2B 洽詢效率。",
     link: "https://enegroup01.github.io/dark.html",
     tags: ["企業官網", "資訊架構", "B2B UX"],
     media: "assets/projects/taixiang-security.png",
@@ -74,7 +74,7 @@ const projects = [
   {
     name: "Design_lab 設計公司 Airtable 整合案",
     type: "Automation",
-    description: "完成 Airtable 串接與專案流程自動化，讓設計交付進度與資源管理可視化且可追蹤。",
+    description: "串接 Airtable 與 AI Workflow Automation，加速專案交付。",
     link: "/projects/design-lab-airtable",
     tags: ["Airtable", "流程自動化", "系統整合"],
     media: "assets/projects/design_lab_demo.mp4",
@@ -85,7 +85,7 @@ const projects = [
   {
     name: "SK2 TOEFL 互動模擬考試",
     type: "EdTech + AI",
-    description: "設計 AI 教學互動體驗與模擬測驗流程，提升作答回饋品質與學習留存表現。",
+    description: "以 LLM 評分與 AI Tutor 回饋，優化托福模考體驗。",
     link: "/projects/sk2-toefl",
     tags: ["互動教學", "AI 回饋", "學習體驗"],
     media: "assets/projects/toefl_demo.mp4",
@@ -96,7 +96,7 @@ const projects = [
   {
     name: "Desko 教育 AI ERP 系統",
     type: "AI ERP",
-    description: "整合教育場景 ERP 與 AI 功能模組，串接教務、內容與營運數據，支援決策流程。",
+    description: "整合 ERP、RAG 知識庫與 AI Agent，支援教務決策。",
     link: "/projects/desko-ai-erp",
     tags: ["AI ERP", "資料整合", "教育科技"],
     media: "assets/projects/desko_demo.mov",
@@ -107,7 +107,7 @@ const projects = [
   {
     name: "國立資訊圖書館智慧館員 - AI曉書 chatbot",
     type: "AI Chatbot",
-    description: "打造圖書館智慧館員對話系統，整合館務知識與即時問答，提升讀者自助服務效率。",
+    description: "以 RAG + LLM 打造智慧館員 chatbot，提供即時館務問答。",
     link: "/projects/library-ai-chatbot",
     tags: ["智慧館員", "RAG問答", "圖書館場景"],
     media: "assets/projects/library.png",
