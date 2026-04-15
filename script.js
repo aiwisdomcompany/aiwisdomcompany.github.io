@@ -51,13 +51,13 @@ const projects = [
     name: "暴力鴨汽車百貨官網",
     type: "Brand Website",
     description: "結合 AI Agent 推薦與 LLM 導購流程，提升詢單轉換。",
-    link: "https://ethaniris.github.io/",
+    link: "",
     tags: ["官網重構", "品牌策略", "轉換優化"],
-    media: "assets/projects/baoliya-auto.png",
-    mediaType: "image",
+    media: "assets/projects/yaris_demo.mp4",
+    mediaType: "video",
     tone: "tone-1",
     featured: true,
-    showCaseLink: true,
+    showCaseLink: false,
   },
   {
     name: "泰祥保全有限公司官網",
@@ -204,16 +204,18 @@ function renderProjects() {
     .map((project) => {
       const hasMedia = Boolean(project.media);
       const isVideo = project.mediaType === "video";
+      const hasLink = Boolean(project.link);
       const mediaLabel = hasMedia ? `${project.name} 專案預覽圖` : `${project.name} 專案預覽圖（placeholder）`;
       const mediaTone = hasMedia ? "" : project.tone;
       const cardClass = [project.featured ? "featured" : "", hasMedia ? "has-media" : "", isVideo ? "has-video" : ""]
         .join(" ")
         .trim();
-      const isExternal = /^https?:\/\//.test(project.link);
+      const isExternal = hasLink && /^https?:\/\//.test(project.link);
       const linkTarget = isExternal ? 'target="_blank" rel="noopener noreferrer"' : "";
-      const caseLink = project.showCaseLink
+      const caseLink = project.showCaseLink && hasLink
         ? `<a class="project-link" href="${project.link}" ${linkTarget} aria-label="查看 ${project.name} 專案">進入示範網站</a>`
         : "";
+      const mockUrl = hasLink ? project.link : "video preview";
 
       let mediaInner = "<span>Project Preview</span>";
       if (hasMedia && isVideo) {
@@ -231,7 +233,7 @@ function renderProjects() {
           <div class="mock-browser" role="img" aria-label="${mediaLabel}">
             <div class="mock-top">
               <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
-              <span class="mock-url">${project.link}</span>
+              <span class="mock-url">${mockUrl}</span>
             </div>
             <div class="mock-canvas ${mediaTone}">
               ${mediaInner}
