@@ -146,22 +146,37 @@ const proofPoints = [
   {
     label: "Best Ranking",
     value: "App Store 教育類第 1 名",
-    description: "曾打造教育產品登上類別榜首，具備產品化與成長驗證經驗。",
+    description: "教育產品在真實市場驗證成長，具備從設計到交付的完整能力。",
+    image: "assets/projects/app_no1.png",
+    alt: "App Store 教育類別第一名成果畫面",
+    layout: "layout-hero",
+    imageClass: "img-no1",
   },
   {
     label: "Hospitality AI",
     value: "喜來登飯店 Line AI 客服",
-    description: "為高標準服務場景提供 AI 對話流程與客服整合開發。",
+    description: "為高標準服務場景建立 AI 對話流程與客服整合系統。",
+    image: "assets/projects/sheraton_line.png",
+    alt: "喜來登飯店 Line AI 客服示意畫面",
+    layout: "layout-side",
+    imageClass: "img-sheraton",
   },
   {
     label: "Domain Coverage",
     value: "網站 × 教育 × 企業系統",
-    description: "跨產業實戰經驗，能以商業目標快速定義最適技術路線。",
+    description: "跨產業實戰經驗，能依商業目標快速定義最適 AI 技術路線。",
+    image: "assets/projects/edu_system.png",
+    alt: "教育與企業系統整合成果畫面",
+    layout: "layout-side",
   },
   {
     label: "Delivery Style",
     value: "策略、設計、開發一體",
-    description: "縮短跨團隊溝通成本，讓專案更快從想法進入可運轉系統。",
+    description: "以一體化流程縮短溝通成本，讓專案更快進入可運轉階段。",
+    image: "assets/projects/strategy.svg",
+    alt: "策略到交付的一體化流程示意",
+    layout: "layout-hero",
+    imageClass: "img-compact",
   },
 ];
 
@@ -282,12 +297,15 @@ function renderProofPoints() {
   container.innerHTML = proofPoints
     .map(
       (point) => `
-      <article class="proof-card reveal" aria-label="${point.value}">
-        <div>
+      <article class="proof-card ${point.layout || ""} reveal" aria-label="${point.value}">
+        <figure class="proof-media">
+          <img class="${point.imageClass || ""}" src="${point.image}" alt="${point.alt}" loading="lazy" />
+        </figure>
+        <div class="proof-content">
           <p class="proof-label">${point.label}</p>
           <p class="proof-value">${point.value}</p>
+          <p class="proof-desc">${point.description}</p>
         </div>
-        <p class="proof-desc">${point.description}</p>
       </article>
     `,
     )
