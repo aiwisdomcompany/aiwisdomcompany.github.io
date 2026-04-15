@@ -61,7 +61,7 @@ const projects = [
     fillMedia: true,
   },
   {
-    name: "泰祥保全有限公司官網",
+    name: "保全公司官網",
     type: "Corporate Site",
     description: "導入 NLP 問答與 AI 風險分流，強化 B2B 洽詢效率。",
     link: "",
