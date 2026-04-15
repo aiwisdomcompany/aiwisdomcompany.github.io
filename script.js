@@ -48,7 +48,7 @@ const services = [
 
 const projects = [
   {
-    name: "暴力鴨汽車百貨官網",
+    name: "汽車百貨官網",
     type: "Brand Website",
     description: "結合 AI Agent 推薦與 LLM 導購流程，提升詢單轉換。",
     link: "",
