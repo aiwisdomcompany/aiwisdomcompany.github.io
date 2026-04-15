@@ -58,18 +58,20 @@ const projects = [
     tone: "tone-1",
     featured: true,
     showCaseLink: false,
+    fillMedia: true,
   },
   {
     name: "泰祥保全有限公司官網",
     type: "Corporate Site",
     description: "導入 NLP 問答與 AI 風險分流，強化 B2B 洽詢效率。",
-    link: "https://enegroup01.github.io/dark.html",
+    link: "",
     tags: ["企業官網", "資訊架構", "B2B UX"],
-    media: "assets/projects/taixiang-security.png",
-    mediaType: "image",
+    media: "assets/projects/taixiang_demo.mp4",
+    mediaType: "video",
     tone: "tone-2",
     featured: false,
-    showCaseLink: true,
+    showCaseLink: false,
+    fillMedia: true,
   },
   {
     name: "Design_lab 設計公司 Airtable 整合案",
@@ -219,8 +221,9 @@ function renderProjects() {
 
       let mediaInner = "<span>Project Preview</span>";
       if (hasMedia && isVideo) {
+        const videoClass = `mock-canvas-media ${project.fillMedia ? "media-fill" : ""}`.trim();
         mediaInner = `
-          <video class="mock-canvas-media" src="${project.media}" autoplay muted loop controls playsinline preload="metadata" aria-label="${project.name} 影片預覽"></video>
+          <video class="${videoClass}" src="${project.media}" autoplay muted loop controls playsinline preload="metadata" aria-label="${project.name} 影片預覽"></video>
           <span class="media-chip">Video Preview</span>
         `;
       } else if (hasMedia) {

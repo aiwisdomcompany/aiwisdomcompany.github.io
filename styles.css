@@ -605,6 +605,7 @@ h1 {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 1rem;
+  align-items: start;
 }
 
 .project-card {
@@ -613,6 +614,7 @@ h1 {
   border: 1px solid rgba(44, 52, 46, 0.16);
   background: rgba(251, 249, 244, 0.88);
   overflow: hidden;
+  height: fit-content;
   transition: transform 0.34s ease, border-color 0.34s ease, box-shadow 0.34s ease;
 }
 
@@ -698,6 +700,10 @@ h1 {
   object-fit: contain;
   object-position: center;
   background: #0f1512;
+}
+
+.mock-canvas-media.media-fill {
+  object-fit: cover;
 }
 
 .project-card.has-video .mock-canvas {
@@ -1185,6 +1191,10 @@ h3 {
 .mock-canvas,
 .mock-canvas-media {
   background: #f2f2f2;
+}
+
+.mock-canvas-media.media-fill {
+  object-fit: cover;
 }
 
 .media-chip {
