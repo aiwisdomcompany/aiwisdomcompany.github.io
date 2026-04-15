@@ -180,6 +180,130 @@ const proofPoints = [
   },
 ];
 
+const LOADER_MIN_DURATION_MS = 700;
+const LOADER_MAX_WAIT_MS = 12000;
+const ASSET_TIMEOUT_MS = 8000;
+
+function wait(ms) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+function collectMediaAssets() {
+  const elements = document.querySelectorAll("main img[src], main video[src]");
+  const seen = new Set();
+  const assets = [];
+
+  elements.forEach((element) => {
+    const rawSrc = element.getAttribute("src");
+    if (!rawSrc) return;
+
+    const absoluteSrc = new URL(rawSrc, window.location.href).href;
+    if (seen.has(absoluteSrc)) return;
+    seen.add(absoluteSrc);
+
+    assets.push({
+      src: absoluteSrc,
+      type: element.tagName.toLowerCase() === "video" ? "video" : "image",
+    });
+  });
+
+  return assets;
+}
+
+function preloadImage(src) {
+  return new Promise((resolve) => {
+    const image = new Image();
+    let settled = false;
+
+    const done = () => {
+      if (settled) return;
+      settled = true;
+      resolve();
+    };
+
+    const timer = window.setTimeout(done, ASSET_TIMEOUT_MS);
+
+    image.onload = () => {
+      window.clearTimeout(timer);
+      done();
+    };
+
+    image.onerror = () => {
+      window.clearTimeout(timer);
+      done();
+    };
+
+    image.src = src;
+
+    if (image.complete) {
+      window.clearTimeout(timer);
+      done();
+    }
+  });
+}
+
+function preloadVideo(src) {
+  return new Promise((resolve) => {
+    const video = document.createElement("video");
+    let settled = false;
+
+    const done = () => {
+      if (settled) return;
+      settled = true;
+      resolve();
+    };
+
+    const timer = window.setTimeout(done, ASSET_TIMEOUT_MS);
+
+    const onReady = () => {
+      window.clearTimeout(timer);
+      done();
+    };
+
+    video.preload = "auto";
+    video.muted = true;
+    video.playsInline = true;
+    video.addEventListener("loadeddata", onReady, { once: true });
+    video.addEventListener("canplay", onReady, { once: true });
+    video.addEventListener("error", onReady, { once: true });
+    video.src = src;
+    video.load();
+  });
+}
+
+async function runInitialLoadingExperience() {
+  const loader = document.querySelector("#site-loader");
+  if (!loader) {
+    document.body.classList.remove("is-loading");
+    return;
+  }
+
+  const start = performance.now();
+  document.body.classList.add("is-loading");
+
+  const assets = collectMediaAssets();
+  if (assets.length > 0) {
+    const tasks = assets.map((asset) => {
+      return asset.type === "video" ? preloadVideo(asset.src) : preloadImage(asset.src);
+    });
+
+    await Promise.race([Promise.allSettled(tasks), wait(LOADER_MAX_WAIT_MS)]);
+  }
+
+  const elapsed = performance.now() - start;
+  if (elapsed < LOADER_MIN_DURATION_MS) {
+    await wait(LOADER_MIN_DURATION_MS - elapsed);
+  }
+
+  loader.classList.add("is-hidden");
+  document.body.classList.remove("is-loading");
+  document.body.classList.add("is-ready");
+
+  window.setTimeout(() => {
+    loader.remove();
+  }, 600);
+}
+
 function renderHeroBadges() {
   const container = document.querySelector("#hero-badges");
   if (!container) return;
@@ -238,7 +362,7 @@ function renderProjects() {
       if (hasMedia && isVideo) {
         const videoClass = `mock-canvas-media ${project.fillMedia ? "media-fill" : ""}`.trim();
         mediaInner = `
-          <video class="${videoClass}" src="${project.media}" autoplay muted loop controls playsinline preload="metadata" aria-label="${project.name} 影片預覽"></video>
+          <video class="${videoClass}" src="${project.media}" autoplay muted loop controls playsinline preload="auto" aria-label="${project.name} 影片預覽"></video>
           <span class="media-chip">Video Preview</span>
         `;
       } else if (hasMedia) {
@@ -336,7 +460,8 @@ function setCurrentYear() {
   if (el) el.textContent = String(new Date().getFullYear());
 }
 
-function initPage() {
+async function initPage() {
+  document.body.classList.add("is-loading");
   renderHeroBadges();
   renderServices();
   renderProjects();
@@ -344,6 +469,9 @@ function initPage() {
   renderProofPoints();
   initRevealAnimations();
   setCurrentYear();
+  await runInitialLoadingExperience();
 }
 
-document.addEventListener("DOMContentLoaded", initPage);
+document.addEventListener("DOMContentLoaded", () => {
+  void initPage();
+});

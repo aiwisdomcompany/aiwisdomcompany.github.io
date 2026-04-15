@@ -67,6 +67,112 @@ body::after {
   mask-image: radial-gradient(circle at 50% 40%, black 15%, transparent 88%);
 }
 
+.topbar,
+main,
+.footer {
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+body.is-loading {
+  overflow: hidden;
+}
+
+body.is-loading .topbar,
+body.is-loading main,
+body.is-loading .footer {
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+}
+
+.site-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 160;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.45s ease, visibility 0.45s ease;
+  background:
+    radial-gradient(72% 48% at 80% 14%, rgba(255, 56, 92, 0.12), transparent 62%),
+    radial-gradient(66% 42% at 10% 88%, rgba(146, 23, 77, 0.1), transparent 62%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.96), rgba(248, 247, 244, 0.94));
+  backdrop-filter: blur(9px);
+}
+
+body.is-loading .site-loader {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.site-loader.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.site-loader-inner {
+  width: min(620px, calc(100vw - 2.2rem));
+  padding: clamp(0.6rem, 1.6vw, 1rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.site-loader-kicker {
+  margin: 0;
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6d6565;
+}
+
+.site-loader-title {
+  margin: 0.52rem 0 0;
+  font-family: "Noto Serif TC", serif;
+  font-size: clamp(1.16rem, 2.3vw, 1.34rem);
+  color: #202627;
+}
+
+.site-loader-ring {
+  margin-top: 0.96rem;
+  width: clamp(56px, 8vw, 72px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  position: relative;
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 56, 92, 0.05),
+    rgba(255, 56, 92, 0.22),
+    rgba(224, 11, 65, 0.95),
+    rgba(255, 56, 92, 0.18),
+    rgba(255, 56, 92, 0.05)
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 5px));
+  animation: loaderSpin 1.15s linear infinite;
+}
+
+.site-loader-ring::after {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  opacity: 0.75;
+}
+
+@keyframes loaderSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 img {
   max-width: 100%;
   display: block;
