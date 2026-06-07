@@ -48,6 +48,19 @@ const services = [
 
 const projects = [
   {
+    name: "慶鴻精密 企業官方網站",
+    type: "Corporate Website",
+    description: "代理 Mitutoyo、Siemens 設計應用軟體與工業設計精密加工服務的企業形象官網。",
+    link: "https://www.chptw.com/",
+    tags: ["企業官網", "品牌資訊架構", "精密工業"],
+    media: "assets/projects/ching_hong.mp4",
+    mediaType: "video",
+    tone: "tone-1",
+    featured: true,
+    showCaseLink: true,
+    fillMedia: true,
+  },
+  {
     name: "汽車百貨官網",
     type: "Brand Website",
     description: "結合 AI Agent 推薦與 LLM 導購流程，提升詢單轉換。",
@@ -56,9 +69,10 @@ const projects = [
     media: "assets/projects/yaris_demo.mp4",
     mediaType: "video",
     tone: "tone-1",
-    featured: true,
+    featured: false,
     showCaseLink: false,
     fillMedia: true,
+    note: "商業保密不公開網站，有興趣了解請聯絡我們。",
   },
   {
     name: "保全公司官網",
@@ -72,50 +86,55 @@ const projects = [
     featured: false,
     showCaseLink: false,
     fillMedia: true,
+    note: "商業保密不公開網站，有興趣了解請聯絡我們。",
   },
   {
     name: "Design_lab 設計公司 Airtable 整合案",
     type: "Automation",
     description: "串接 Airtable 與 AI Workflow Automation，加速專案交付。",
-    link: "/projects/design-lab-airtable",
+    link: "",
     tags: ["Airtable", "流程自動化", "系統整合"],
     media: "assets/projects/design_lab_demo.mp4",
     mediaType: "video",
     tone: "tone-3",
     featured: false,
+    note: "商業保密不公開網站，有興趣了解請聯絡我們。",
   },
   {
     name: "SK2 TOEFL 互動模擬考試",
     type: "EdTech + AI",
     description: "以 LLM 評分與 AI Tutor 回饋，優化托福模考體驗。",
-    link: "/projects/sk2-toefl",
+    link: "",
     tags: ["互動教學", "AI 回饋", "學習體驗"],
     media: "assets/projects/toefl_demo.mp4",
     mediaType: "video",
     tone: "tone-4",
     featured: false,
+    note: "商業保密不公開網站，有興趣了解請聯絡我們。",
   },
   {
     name: "Desko 教育 AI ERP 系統",
     type: "AI ERP",
     description: "整合 ERP、RAG 知識庫與 AI Agent，支援教務決策。",
-    link: "/projects/desko-ai-erp",
+    link: "",
     tags: ["AI ERP", "資料整合", "教育科技"],
     media: "assets/projects/desko_demo.mov",
     mediaType: "video",
     tone: "tone-5",
     featured: true,
+    note: "商業保密不公開網站，有興趣了解請聯絡我們。",
   },
   {
     name: "國立資訊圖書館智慧館員 - AI曉書 chatbot",
     type: "AI Chatbot",
     description: "以 RAG + LLM 打造智慧館員 chatbot，提供即時館務問答。",
-    link: "/projects/library-ai-chatbot",
+    link: "",
     tags: ["智慧館員", "RAG問答", "圖書館場景"],
     media: "assets/projects/library.png",
     mediaType: "image",
     tone: "tone-2",
     featured: false,
+    note: "商業保密不公開網站，有興趣了解請聯絡我們。",
   },
 ];
 
@@ -304,6 +323,396 @@ async function runInitialLoadingExperience() {
   }, 600);
 }
 
+function initMetamorphosis() {
+  const canvas = document.querySelector("#metamorphosis-canvas");
+  if (!canvas) return;
+
+  const gl = canvas.getContext("webgl", {
+    alpha: true,
+    antialias: false,
+    premultipliedAlpha: false,
+    preserveDrawingBuffer: false,
+  });
+  if (!gl) {
+    canvas.hidden = true;
+    return;
+  }
+
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const vertSrc = `
+    attribute vec2 a_pos;
+    void main() {
+      gl_Position = vec4(a_pos, 0.0, 1.0);
+    }
+  `;
+
+  const fragSrc = `
+    precision highp float;
+    uniform float u_time;
+    uniform vec2 u_res;
+    uniform float u_morphSpeed;
+    uniform float u_blobCount;
+    uniform vec2 u_mouse;
+
+    #define PI 3.14159265359
+    #define TAU 6.28318530718
+    #define MAX_STEPS 48
+    #define MAX_DIST 20.0
+    #define SURF_DIST 0.002
+    #define BLOB_MAX 6
+
+    vec3 g_pos[BLOB_MAX];
+    vec3 g_radStretch[BLOB_MAX];
+    mat2 g_rotXY[BLOB_MAX];
+    mat2 g_rotYZ[BLOB_MAX];
+    int g_count;
+
+    float smin(float a, float b, float k) {
+      float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
+      return mix(b, a, h) - k * h * (1.0 - h);
+    }
+
+    float sdEllipsoid(vec3 p, vec3 r) {
+      float k0 = length(p / r);
+      float k1 = length(p / (r * r));
+      return k0 * (k0 - 1.0) / k1;
+    }
+
+    float scene(vec3 p) {
+      float d = MAX_DIST;
+      for (int i = 0; i < BLOB_MAX; i++) {
+        if (i >= g_count) break;
+        vec3 q = p - g_pos[i];
+        q = vec3(g_rotXY[i] * q.xy, q.z);
+        q = vec3(q.x, g_rotYZ[i] * q.yz);
+        d = smin(d, sdEllipsoid(q, g_radStretch[i]), 0.6);
+      }
+      return d;
+    }
+
+    vec3 calcNormal(vec3 p) {
+      vec2 e = vec2(0.002, -0.002);
+      return normalize(
+        e.xyy * scene(p + e.xyy) +
+        e.yyx * scene(p + e.yyx) +
+        e.yxy * scene(p + e.yxy) +
+        e.xxx * scene(p + e.xxx)
+      );
+    }
+
+    float softShadow(vec3 ro, vec3 rd, float mint, float maxt, float k) {
+      float res = 1.0;
+      float ph = 1e10;
+      float t = mint;
+      for (int i = 0; i < 16; i++) {
+        float h = scene(ro + rd * t);
+        if (h < 0.001) return 0.0;
+        float y = h * h / (2.0 * ph);
+        float d = sqrt(max(h * h - y * y, 0.0));
+        res = min(res, k * d / max(0.0, t - y));
+        ph = h;
+        t += h;
+        if (t > maxt) break;
+      }
+      return clamp(res, 0.0, 1.0);
+    }
+
+    float calcAO(vec3 p, vec3 n) {
+      float occ = 0.0;
+      float sca = 1.0;
+      for (int i = 0; i < 3; i++) {
+        float h = 0.01 + 0.12 * float(i) / 2.0;
+        float d = scene(p + h * n);
+        occ += (h - d) * sca;
+        sca *= 0.95;
+      }
+      return clamp(1.0 - 3.0 * occ, 0.0, 1.0);
+    }
+
+    float fresnel(float cosTheta, float f0) {
+      return f0 + (1.0 - f0) * pow(1.0 - cosTheta, 5.0);
+    }
+
+    vec3 envMap(vec3 rd) {
+      float y = rd.y * 0.5 + 0.5;
+      vec3 sky = mix(vec3(0.42, 0.28, 0.3), vec3(0.98, 0.72, 0.78), y);
+      float sun = pow(max(dot(rd, normalize(vec3(2.0, 3.0, 1.0))), 0.0), 32.0);
+      sky += vec3(1.0, 0.92, 0.88) * sun * 0.62;
+      float fill = pow(max(dot(rd, normalize(vec3(-2.0, 1.0, -1.0))), 0.0), 8.0);
+      sky += vec3(1.0, 0.58, 0.68) * fill * 0.16;
+      float rim = pow(max(dot(rd, normalize(vec3(0.0, 0.5, -2.0))), 0.0), 16.0);
+      sky += vec3(0.96, 0.78, 0.8) * rim * 0.2;
+      return sky;
+    }
+
+    void main() {
+      vec2 uv = (gl_FragCoord.xy - u_res * 0.5) / min(u_res.x, u_res.y);
+      float aspect = u_res.x / u_res.y;
+      uv.x -= mix(0.12, 0.42, smoothstep(1.1, 1.7, aspect));
+      uv.y += mix(0.0, 0.04, smoothstep(1.1, 1.7, aspect));
+      float t = u_time;
+      float speed = t * u_morphSpeed;
+
+      g_count = int(u_blobCount);
+      for (int i = 0; i < BLOB_MAX; i++) {
+        if (i >= g_count) break;
+        float fi = float(i);
+        float phase = fi * TAU / 6.0;
+        g_pos[i] = vec3(
+          sin(speed * 0.7 + phase) * 0.8 + sin(speed * 0.3 + phase * 2.3) * 0.3,
+          cos(speed * 0.5 + phase * 1.4) * 0.6 + sin(speed * 0.8 + phase * 0.7) * 0.25,
+          sin(speed * 0.6 + phase * 1.8) * 0.5 + cos(speed * 0.4 + phase * 2.1) * 0.2
+        );
+        float base = 0.36 + fi * 0.025;
+        float pulse = sin(speed * 1.2 + fi * 1.7) * 0.08 + sin(speed * 0.5 + fi * 3.1) * 0.05;
+        float r = base + pulse;
+        float sx = 1.0 + sin(speed * 0.9 + fi * 2.3) * 0.25;
+        float sy = 1.0 + cos(speed * 0.7 + fi * 1.9) * 0.2;
+        float sz = 1.0 + sin(speed * 1.1 + fi * 2.7) * 0.2;
+        float norm = pow(1.0 / (sx * sy * sz), 0.333);
+        g_radStretch[i] = vec3(r) * vec3(sx, sy, sz) * norm;
+        float ca = cos(speed * 0.3 + fi * 1.1), sa = sin(speed * 0.3 + fi * 1.1);
+        g_rotXY[i] = mat2(ca, -sa, sa, ca);
+        float cb = cos(speed * 0.2 + fi * 0.9), sb = sin(speed * 0.2 + fi * 0.9);
+        g_rotYZ[i] = mat2(cb, -sb, sb, cb);
+      }
+
+      if (u_mouse.x > 0.0) {
+        vec2 mUV = (u_mouse - u_res * 0.5) / min(u_res.x, u_res.y);
+        vec3 mouseWorld = vec3(mUV.x * 3.0, mUV.y * 3.0, 0.5);
+        for (int i = 0; i < BLOB_MAX; i++) {
+          if (i >= g_count) break;
+          vec3 toMouse = mouseWorld - g_pos[i];
+          float mDist = length(toMouse);
+          float pull = 0.45 / (1.0 + mDist * mDist * 2.0);
+          g_pos[i] += toMouse * pull;
+        }
+      }
+
+      vec3 ro = vec3(0.25, 0.28, 4.45);
+      vec3 target = vec3(0.62, -0.04, 0.0);
+      vec3 fwd = normalize(target - ro);
+      vec3 right = normalize(cross(fwd, vec3(0.0, 1.0, 0.0)));
+      vec3 up = cross(right, fwd);
+      vec3 rd = normalize(fwd * 1.5 + right * uv.x + up * uv.y);
+
+      float bsB = dot(ro, rd);
+      float bsC = dot(ro, ro) - 6.25;
+      float bsDisc = bsB * bsB - bsC;
+
+      float totalDist = 0.0;
+      float dist = 0.0;
+      vec3 p = ro;
+      bool hit = false;
+
+      if (bsDisc > 0.0) {
+        float sqrtDisc = sqrt(bsDisc);
+        float t0 = -bsB - sqrtDisc;
+        float t1 = -bsB + sqrtDisc;
+        if (t1 > 0.0) {
+          totalDist = max(t0, 0.0);
+          float marchLimit = min(t1, MAX_DIST);
+          for (int i = 0; i < MAX_STEPS; i++) {
+            p = ro + rd * totalDist;
+            dist = scene(p);
+            if (dist < SURF_DIST) {
+              hit = true;
+              break;
+            }
+            if (totalDist > marchLimit) break;
+            totalDist += dist;
+          }
+        }
+      }
+
+      vec3 col = vec3(0.0);
+      float alpha = 0.0;
+
+      if (hit) {
+        vec3 n = calcNormal(p);
+        vec3 v = normalize(ro - p);
+
+        vec3 baseColor = vec3(1.0, 0.78, 0.82);
+        vec3 roseColor = vec3(1.0, 0.54, 0.65);
+        vec3 copperColor = vec3(0.96, 0.66, 0.68);
+        vec3 sageColor = vec3(0.86, 0.78, 0.74);
+
+        float colorMix1 = sin(p.x * 3.0 + p.z * 2.0 + t * u_morphSpeed * 0.4) * 0.5 + 0.5;
+        float colorMix2 = sin(p.y * 4.0 - p.x * 2.5 + t * u_morphSpeed * 0.3) * 0.5 + 0.5;
+        vec3 albedo = mix(baseColor, roseColor, colorMix1 * 0.34);
+        albedo = mix(albedo, copperColor, colorMix2 * 0.24);
+        albedo = mix(albedo, sageColor, smoothstep(0.3, 1.0, n.y) * 0.12);
+
+        float metallic = 0.9;
+        float roughness = 0.14;
+
+        vec3 lightDir1 = normalize(vec3(2.0, 3.0, 1.5));
+        vec3 lightCol1 = vec3(1.0, 0.92, 0.9) * 1.65;
+        vec3 lightDir2 = normalize(vec3(-2.0, 1.0, -1.0));
+        vec3 lightCol2 = vec3(1.0, 0.5, 0.62) * 0.42;
+        vec3 lightDir3 = normalize(vec3(0.0, 0.5, -2.0));
+        vec3 lightCol3 = vec3(0.96, 0.76, 0.78) * 0.38;
+
+        float diff1 = max(dot(n, lightDir1), 0.0);
+        float diff2 = max(dot(n, lightDir2), 0.0);
+        float diff3 = max(dot(n, lightDir3), 0.0);
+
+        float specPow = mix(256.0, 32.0, roughness);
+        vec3 h1 = normalize(lightDir1 + v);
+        vec3 h2 = normalize(lightDir2 + v);
+        vec3 h3 = normalize(lightDir3 + v);
+        float spec1 = pow(max(dot(n, h1), 0.0), specPow);
+        float spec2 = pow(max(dot(n, h2), 0.0), specPow);
+        float spec3 = pow(max(dot(n, h3), 0.0), specPow);
+
+        float NdotV = max(dot(n, v), 0.0);
+        float fres = fresnel(NdotV, 0.04 + metallic * 0.76);
+        float shadow = softShadow(p + n * 0.01, lightDir1, 0.02, 5.0, 16.0);
+        float ao = calcAO(p, n);
+
+        vec3 diffuse = albedo * (1.0 - metallic) * (
+          lightCol1 * diff1 * shadow +
+          lightCol2 * diff2 +
+          lightCol3 * diff3
+        );
+        vec3 specColor = mix(vec3(0.04), albedo, metallic);
+        vec3 specular = specColor * (
+          lightCol1 * spec1 * shadow * 1.6 +
+          lightCol2 * spec2 * 0.9 +
+          lightCol3 * spec3
+        );
+
+        vec3 envRefl = envMap(reflect(-v, n));
+        vec3 envContrib = envRefl * mix(vec3(0.04), albedo, metallic) * fres;
+        float rimFactor = pow(1.0 - NdotV, 4.0);
+        vec3 rimColor = vec3(1.0, 0.62, 0.7) * rimFactor * 0.62;
+        float topSpec = pow(max(dot(n, h1), 0.0), 512.0) * shadow;
+
+        col = (diffuse + specular + envContrib + rimColor) * ao;
+        col += vec3(1.0, 0.94, 0.92) * topSpec * 1.7;
+        alpha = clamp(0.44 + fres * 0.2 + rimFactor * 0.1, 0.0, 0.68);
+      }
+
+      float closestT = max(-dot(ro, rd), 0.0);
+      vec3 closestP = ro + rd * closestT;
+      float closestDist = length(closestP - vec3(0.45, 0.0, 0.0));
+      float atmosGlow = exp(-closestDist * closestDist * 0.75) * 0.18;
+      vec3 glowColor = vec3(1.0, 0.55, 0.65) * atmosGlow;
+      glowColor += vec3(1.0, 0.82, 0.82) * atmosGlow * 0.45;
+      col += glowColor;
+      alpha += atmosGlow * 0.22;
+
+      col = col * (2.51 * col + 0.03) / (col * (2.43 * col + 0.59) + 0.14);
+      col = pow(max(col, vec3(0.0)), vec3(0.95, 0.98, 1.04));
+      float vig = 1.0 - dot(uv, uv) * 0.2;
+      col *= vig;
+      float readableSide = smoothstep(-0.24, 0.36, uv.x);
+      alpha *= mix(0.48, 1.0, readableSide);
+      alpha = clamp(alpha * vig, 0.0, 0.66);
+
+      gl_FragColor = vec4(col, alpha);
+    }
+  `;
+
+  function compile(type, src) {
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, src);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      console.warn(gl.getShaderInfoLog(shader));
+      return null;
+    }
+    return shader;
+  }
+
+  const vert = compile(gl.VERTEX_SHADER, vertSrc);
+  const frag = compile(gl.FRAGMENT_SHADER, fragSrc);
+  if (!vert || !frag) {
+    canvas.hidden = true;
+    return;
+  }
+
+  const program = gl.createProgram();
+  gl.attachShader(program, vert);
+  gl.attachShader(program, frag);
+  gl.linkProgram(program);
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    console.warn(gl.getProgramInfoLog(program));
+    canvas.hidden = true;
+    return;
+  }
+  gl.useProgram(program);
+
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+
+  const aPos = gl.getAttribLocation(program, "a_pos");
+  gl.enableVertexAttribArray(aPos);
+  gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+  const uTime = gl.getUniformLocation(program, "u_time");
+  const uRes = gl.getUniformLocation(program, "u_res");
+  const uMorphSpeed = gl.getUniformLocation(program, "u_morphSpeed");
+  const uBlobCount = gl.getUniformLocation(program, "u_blobCount");
+  const uMouse = gl.getUniformLocation(program, "u_mouse");
+
+  let dpr = Math.min(window.devicePixelRatio || 1, 1.4);
+  let needsResize = true;
+  let running = true;
+  let mouseX = -1;
+  let mouseY = -1;
+
+  function resize() {
+    needsResize = false;
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const width = Math.max(1, Math.round(canvas.clientWidth * dpr));
+    const height = Math.max(1, Math.round(canvas.clientHeight * dpr));
+    if (canvas.width !== width || canvas.height !== height) {
+      canvas.width = width;
+      canvas.height = height;
+      gl.viewport(0, 0, width, height);
+      gl.uniform2f(uRes, width, height);
+    }
+  }
+
+  window.addEventListener("mousemove", (event) => {
+    const rect = canvas.getBoundingClientRect();
+    mouseX = (event.clientX - rect.left) * dpr;
+    mouseY = (rect.height - (event.clientY - rect.top)) * dpr;
+  });
+
+  window.addEventListener("mouseleave", () => {
+    mouseX = -1;
+    mouseY = -1;
+  });
+
+  function render(now) {
+    if (!running) return;
+    if (needsResize) resize();
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.uniform1f(uTime, prefersReduced ? 0 : now * 0.001);
+    gl.uniform1f(uMorphSpeed, 0.48);
+    gl.uniform1f(uBlobCount, 4.0);
+    gl.uniform2f(uMouse, mouseX, mouseY);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    window.requestAnimationFrame(render);
+  }
+
+  window.addEventListener("resize", () => {
+    needsResize = true;
+  });
+
+  resize();
+  window.requestAnimationFrame(render);
+
+  document.addEventListener("visibilitychange", () => {
+    running = !document.hidden;
+    if (running) window.requestAnimationFrame(render);
+  });
+}
+
 function renderHeroBadges() {
   const container = document.querySelector("#hero-badges");
   if (!container) return;
@@ -354,9 +763,10 @@ function renderProjects() {
       const isExternal = hasLink && /^https?:\/\//.test(project.link);
       const linkTarget = isExternal ? 'target="_blank" rel="noopener noreferrer"' : "";
       const caseLink = project.showCaseLink && hasLink
-        ? `<a class="project-link" href="${project.link}" ${linkTarget} aria-label="查看 ${project.name} 專案">進入示範網站</a>`
+        ? `<a class="project-link" href="${project.link}" ${linkTarget} aria-label="查看 ${project.name} 專案">進入網站</a>`
         : "";
-      const mockUrl = hasLink ? project.link : "video preview";
+      const mockUrl = hasLink ? project.link : project.note ? "private project preview" : "video preview";
+      const projectNote = project.note ? `<p class="project-note">${project.note}</p>` : "";
 
       let mediaInner = "<span>Project Preview</span>";
       if (hasMedia && isVideo) {
@@ -389,6 +799,7 @@ function renderProjects() {
           </div>
           <h3>${project.name}</h3>
           <p>${project.description}</p>
+          ${projectNote}
           <ul class="tags" aria-label="${project.name} 技術標籤">
             ${project.tags.map((tag) => `<li>${tag}</li>`).join("")}
           </ul>
@@ -467,6 +878,7 @@ async function initPage() {
   renderProjects();
   renderAwards();
   renderProofPoints();
+  initMetamorphosis();
   initRevealAnimations();
   setCurrentYear();
   await runInitialLoadingExperience();
