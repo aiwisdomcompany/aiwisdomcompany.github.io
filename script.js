@@ -448,6 +448,7 @@ function initMetamorphosis() {
     void main() {
       vec2 uv = (gl_FragCoord.xy - u_res * 0.5) / min(u_res.x, u_res.y);
       float aspect = u_res.x / u_res.y;
+      float portrait = 1.0 - smoothstep(0.72, 1.0, aspect);
       uv.x -= mix(0.12, 0.42, smoothstep(1.1, 1.7, aspect));
       uv.y += mix(0.0, 0.04, smoothstep(1.1, 1.7, aspect));
       float t = u_time;
@@ -469,6 +470,10 @@ function initMetamorphosis() {
         float sx = 1.0 + sin(speed * 0.9 + fi * 2.3) * 0.25;
         float sy = 1.0 + cos(speed * 0.7 + fi * 1.9) * 0.2;
         float sz = 1.0 + sin(speed * 1.1 + fi * 2.7) * 0.2;
+        float portraitRoundness = portrait * 0.72;
+        sx = mix(sx, 1.0, portraitRoundness);
+        sy = mix(sy, 1.0, portraitRoundness);
+        sz = mix(sz, 1.0, portraitRoundness);
         float norm = pow(1.0 / (sx * sy * sz), 0.333);
         g_radStretch[i] = vec3(r) * vec3(sx, sy, sz) * norm;
         float ca = cos(speed * 0.3 + fi * 1.1), sa = sin(speed * 0.3 + fi * 1.1);
@@ -494,7 +499,7 @@ function initMetamorphosis() {
       vec3 fwd = normalize(target - ro);
       vec3 right = normalize(cross(fwd, vec3(0.0, 1.0, 0.0)));
       vec3 up = cross(right, fwd);
-      vec3 rd = normalize(fwd * 1.5 + right * uv.x + up * uv.y);
+      vec3 rd = normalize(fwd * 1.5 + right * uv.x * mix(1.0, 0.86, portrait) + up * uv.y * mix(1.0, 0.96, portrait));
 
       float bsB = dot(ro, rd);
       float bsC = dot(ro, ro) - 6.25;
