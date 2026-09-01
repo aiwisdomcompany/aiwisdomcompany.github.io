@@ -8,7 +8,7 @@ const heroBadges = [
     meta: "教育產品實戰成效",
   },
   {
-    title: "喜來登飯店 LINE AI 客服開發",
+    title: "台北知名飯店 LINE AI 客服開發",
     meta: "高標準服務場景導入",
   },
 ];
@@ -173,10 +173,10 @@ const proofPoints = [
   },
   {
     label: "Hospitality AI",
-    value: "喜來登飯店 LINE AI 客服",
+    value: "台北知名飯店 LINE AI 客服",
     description: "為高標準服務場景建立 AI 對話流程與客服整合系統。",
     image: "assets/projects/sheraton_line.png",
-    alt: "喜來登飯店 LINE AI 客服示意畫面",
+    alt: "台北知名飯店 LINE AI 客服示意畫面",
     layout: "layout-side",
     imageClass: "img-sheraton",
   },
