@@ -140,8 +140,8 @@ class AIErpFactory extends HTMLElement {
         <path d="M153 190L168 182M157 194L178 183M161 197L173 190" stroke="#e45769" stroke-width="1.6"/>
       </g>
       <circle class="lamp" cx="204" cy="150" r="4.1"/>
-      <text x="129" y="119" class="svg-label">01 · ORDER</text>
-      <text x="130" y="135" class="svg-small">訂單自動接收</text>
+      <text x="129" y="119" class="svg-label">01 · AI ORDER</text>
+      <text x="130" y="135" class="svg-small">AI 智慧接單</text>
     </g>
 
     <!-- INVENTORY rack -->
@@ -160,8 +160,8 @@ class AIErpFactory extends HTMLElement {
       <g><path d="M352 239L371 229L389 239L370 249Z" fill="url(#boxTop)"/><path d="M352 239L370 249L370 275L352 265Z" fill="url(#boxLeft)"/><path d="M370 249L389 239L389 264L370 275Z" fill="url(#boxRight)"/></g>
       <circle class="lamp" cx="350" cy="140" r="4"/>
       <path id="rack-light" d="M286 201L335 227" stroke="#f3425c" stroke-width="3" stroke-linecap="round" opacity=".8"/>
-      <text x="300" y="87" class="svg-label">02 · INVENTORY</text>
-      <text x="300" y="103" class="svg-small">AI 智慧庫存</text>
+      <text x="300" y="87" class="svg-label">02 · AUTOMATION</text>
+      <text x="300" y="103" class="svg-small">流程自動處理</text>
     </g>
 
     <!-- Packing robotic arm module -->
@@ -183,8 +183,8 @@ class AIErpFactory extends HTMLElement {
       <path d="M650 229L658 277" stroke="url(#whiteMetal)" stroke-width="8" stroke-linecap="round"/>
       <g id="packing-claw"><path d="M645 280L658 288L672 280M645 280L641 293M672 280L676 293" stroke="#ff6073" stroke-width="5" stroke-linecap="round" fill="none"/></g>
       <circle class="lamp" cx="609" cy="258" r="4"/>
-      <text x="545" y="142" class="svg-label">03 · PACK & SHIP</text>
-      <text x="545" y="158" class="svg-small">自動打包 / 出貨</text>
+      <text x="545" y="142" class="svg-label">03 · SMART STOCK</text>
+      <text x="545" y="158" class="svg-small">AI 智慧庫存</text>
       <g id="mini-scan"><path d="M641 295L673 301" stroke="#ff3c55" stroke-width="3" filter="url(#neon)" opacity=".55"/></g>
     </g>
 
@@ -278,9 +278,9 @@ class AIErpFactory extends HTMLElement {
     <text x="449" y="558" text-anchor="middle" font-size="10" fill="#ee5570" font-weight="800" letter-spacing="4" transform="rotate(27 449 558)">AI-POWERED OPERATIONS</text>
   </svg>
   <div class="stepbar">
-    <div class="step active" data-step="0"><span class="num">STAGE 01</span><span class="zh">下訂單</span><span class="en">ORDER</span></div>
-    <div class="step" data-step="1"><span class="num">STAGE 02</span><span class="zh">智慧庫存</span><span class="en">INVENTORY</span></div>
-    <div class="step" data-step="2"><span class="num">STAGE 03</span><span class="zh">準備出貨</span><span class="en">FULFILLMENT</span></div>
+    <div class="step active" data-step="0"><span class="num">STAGE 01</span><span class="zh">AI 接單</span><span class="en">AI ORDER</span></div>
+    <div class="step" data-step="1"><span class="num">STAGE 02</span><span class="zh">自動化處理</span><span class="en">AUTOMATION</span></div>
+    <div class="step" data-step="2"><span class="num">STAGE 03</span><span class="zh">智慧庫存</span><span class="en">SMART STOCK</span></div>
     <div class="step" data-step="3"><span class="num">STAGE 04</span><span class="zh">客戶滿意</span><span class="en">DELIVERED</span></div>
   </div>
 </div>`;
