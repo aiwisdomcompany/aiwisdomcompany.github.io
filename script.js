@@ -53,7 +53,8 @@ const projects = [
     description: "打造「暴力鴨研究所」導入 AI Agent、AEO／GEO 與導購流程，提升商品被 AI 發現與詢單轉換。",
     link: "https://gr-yaris-store.netlify.app/",
     tags: ["汽車百貨", "AI 導購", "轉換優化"],
-    media: "assets/projects/yaris_demo.mp4",
+    media: "assets/projects/optimized/yaris_demo.mp4",
+    poster: "assets/projects/optimized/yaris_demo.webp",
     mediaType: "video",
     tone: "tone-1",
     featured: true,
@@ -66,7 +67,8 @@ const projects = [
     description: "代理 Mitutoyo、Siemens 設計應用軟體與工業設計精密加工服務的企業形象官網。",
     link: "",
     tags: ["企業官網", "品牌資訊架構", "精密工業"],
-    media: "assets/projects/ching_hong.mp4",
+    media: "assets/projects/optimized/ching_hong.mp4",
+    poster: "assets/projects/optimized/ching_hong.webp",
     mediaType: "video",
     tone: "tone-1",
     featured: true,
@@ -80,7 +82,8 @@ const projects = [
     description: "以 AI 自動分流、回覆與追蹤客戶，縮短 B2B 洽詢流程並提升轉換效率。",
     link: "",
     tags: ["企業官網", "資訊架構", "B2B UX"],
-    media: "assets/projects/taixiang_demo.mp4",
+    media: "assets/projects/optimized/taixiang_demo.mp4",
+    poster: "assets/projects/optimized/taixiang_demo.webp",
     mediaType: "video",
     tone: "tone-2",
     featured: false,
@@ -94,7 +97,8 @@ const projects = [
     description: "整合既有 Airtable 資料庫與工作流程，打造 AI Agent 工作平台，自動化報價、帳款與應收分析，加速日常營運。",
     link: "",
     tags: ["Airtable", "流程自動化", "系統整合"],
-    media: "assets/projects/design_lab_demo.mp4",
+    media: "assets/projects/optimized/design_lab_demo.mp4",
+    poster: "assets/projects/optimized/design_lab_demo.webp",
     mediaType: "video",
     tone: "tone-3",
     featured: false,
@@ -106,7 +110,8 @@ const projects = [
     description: "以 LLM 評分與 AI Tutor 回饋，優化托福模考體驗。",
     link: "",
     tags: ["互動教學", "AI 回饋", "學習體驗"],
-    media: "assets/projects/toefl_demo.mp4",
+    media: "assets/projects/optimized/toefl_demo.mp4",
+    poster: "assets/projects/optimized/toefl_demo.webp",
     mediaType: "video",
     tone: "tone-4",
     featured: false,
@@ -118,7 +123,8 @@ const projects = [
     description: "整合 ERP、RAG 知識庫與 AI Agent，支援教務決策。",
     link: "",
     tags: ["AI ERP", "資料整合", "教育科技"],
-    media: "assets/projects/desko_demo.mov",
+    media: "assets/projects/optimized/desko_demo.mp4",
+    poster: "assets/projects/optimized/desko_demo.webp",
     mediaType: "video",
     tone: "tone-5",
     featured: true,
@@ -258,7 +264,9 @@ function renderProjects() {
       if (hasMedia && isVideo) {
         const videoClass = `mock-canvas-media ${project.fillMedia ? "media-fill" : ""}`.trim();
         mediaInner = `
-          <video class="${videoClass}" src="${project.media}" autoplay muted loop controls playsinline preload="auto" aria-label="${project.name} 影片預覽"></video>
+          <video class="${videoClass}" poster="${project.poster}" muted loop controls playsinline preload="none" aria-label="${project.name} 影片預覽">
+            <source data-src="${project.media}" type="video/mp4" />
+          </video>
           <span class="media-chip">Video Preview</span>
         `;
       } else if (hasMedia) {
@@ -352,6 +360,64 @@ function initRevealAnimations() {
   elements.forEach((element) => observer.observe(element));
 }
 
+function initProjectVideos() {
+  const videos = document.querySelectorAll(".project-card video");
+  if (!videos.length) return;
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const loadObserver = new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach(({ isIntersecting, target }) => {
+        if (!isIntersecting) return;
+        const source = target.querySelector("source[data-src]");
+        if (source) {
+          source.src = source.dataset.src;
+          source.removeAttribute("data-src");
+          target.load();
+        }
+        observer.unobserve(target);
+      });
+    },
+    { rootMargin: "300px 0px" },
+  );
+
+  const playObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(({ isIntersecting, target }) => {
+        target.dataset.inView = String(isIntersecting);
+        if (isIntersecting && !document.hidden && !reducedMotion.matches) {
+          target.play().catch(() => {});
+        } else {
+          target.pause();
+        }
+      });
+    },
+    { threshold: 0.2 },
+  );
+
+  const syncPlayback = () => {
+    videos.forEach((video) => {
+      if (video.dataset.inView === "true" && !document.hidden && !reducedMotion.matches) {
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    });
+  };
+
+  videos.forEach((video) => {
+    video.addEventListener("canplay", () => {
+      if (video.dataset.inView === "true" && !document.hidden && !reducedMotion.matches) {
+        video.play().catch(() => {});
+      }
+    });
+    loadObserver.observe(video);
+    playObserver.observe(video);
+  });
+  document.addEventListener("visibilitychange", syncPlayback);
+  reducedMotion.addEventListener?.("change", syncPlayback);
+}
+
 function setCurrentYear() {
   const el = document.querySelector("#year");
   if (el) el.textContent = String(new Date().getFullYear());
@@ -361,6 +427,7 @@ function initPage() {
   renderHeroBadges();
   renderServices();
   renderProjects();
+  initProjectVideos();
   renderAwards();
   renderProofPoints();
   initRevealAnimations();
