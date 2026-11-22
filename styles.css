@@ -824,6 +824,24 @@ h1 {
   border-bottom: 1px solid rgba(49, 58, 51, 0.14);
 }
 
+.project-media-link {
+  display: block;
+}
+
+.project-media-link:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.project-media-link img {
+  transition: transform 0.45s ease;
+}
+
+.project-media-link:hover img,
+.project-media-link:focus-visible img {
+  transform: scale(1.025);
+}
+
 .mock-browser {
   border-radius: 14px;
   overflow: hidden;

@@ -62,6 +62,19 @@ const projects = [
     fillMedia: true,
   },
   {
+    name: "室內設計專案營運系統",
+    type: "Project Operations",
+    description: "從報價、施工排程到帳務與驗收，串接室內設計團隊的完整專案流程。",
+    link: "projects/interior-operations/",
+    tags: ["專案管理", "Airtable 整合", "LINE 自動化"],
+    media: "projects/interior-operations/assets/calendar.webp",
+    mediaType: "image",
+    tone: "tone-3",
+    featured: true,
+    showCaseLink: true,
+    caseStudy: true,
+  },
+  {
     name: "慶鴻精密 企業官方網站",
     type: "Corporate Website",
     description: "代理 Mitutoyo、Siemens 設計應用軟體與工業設計精密加工服務的企業形象官網。",
@@ -89,19 +102,6 @@ const projects = [
     featured: false,
     showCaseLink: false,
     fillMedia: true,
-    note: "商業保密不公開網站，有興趣了解請聯絡我們。",
-  },
-  {
-    name: "Design_lab 設計公司 Airtable 整合案",
-    type: "Automation",
-    description: "整合既有 Airtable 資料庫與工作流程，打造 AI Agent 工作平台，自動化報價、帳款與應收分析，加速日常營運。",
-    link: "",
-    tags: ["Airtable", "流程自動化", "系統整合"],
-    media: "assets/projects/optimized/design_lab_demo.mp4",
-    poster: "assets/projects/optimized/design_lab_demo.webp",
-    mediaType: "video",
-    tone: "tone-3",
-    featured: false,
     note: "商業保密不公開網站，有興趣了解請聯絡我們。",
   },
   {
@@ -255,9 +255,9 @@ function renderProjects() {
       const isExternal = hasLink && /^https?:\/\//.test(project.link);
       const linkTarget = isExternal ? 'target="_blank" rel="noopener noreferrer"' : "";
       const caseLink = project.showCaseLink && hasLink
-        ? `<a class="project-link" href="${project.link}" ${linkTarget} aria-label="查看 ${project.name} 專案">進入網站</a>`
+        ? `<a class="project-link" href="${project.link}" ${linkTarget} aria-label="${project.caseStudy ? "閱讀" : "查看"} ${project.name} 專案">${project.caseStudy ? "深入了解案例" : "進入網站"}</a>`
         : "";
-      const mockUrl = hasLink ? project.link : project.note ? "private project preview" : "video preview";
+      const mockUrl = project.caseStudy ? "CASE STUDY / PROJECT OPERATIONS" : hasLink ? project.link : project.note ? "private project preview" : "video preview";
       const projectNote = project.note ? `<p class="project-note">${project.note}</p>` : "";
 
       let mediaInner = "<span>Project Preview</span>";
@@ -276,6 +276,7 @@ function renderProjects() {
       return `
       <article class="project-card ${cardClass} reveal" aria-label="${project.name}">
         <div class="project-media">
+          ${project.caseStudy ? `<a class="project-media-link" href="${project.link}" aria-label="閱讀 ${project.name} 完整案例">` : ""}
           <div class="mock-browser" role="img" aria-label="${mediaLabel}">
             <div class="mock-top">
               <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -285,6 +286,7 @@ function renderProjects() {
               ${mediaInner}
             </div>
           </div>
+          ${project.caseStudy ? "</a>" : ""}
         </div>
         <div class="project-content">
           <div class="project-meta">
